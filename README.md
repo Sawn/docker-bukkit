@@ -18,7 +18,7 @@ To start the server and accept the EULA in one fell swoop, just pass the `EULA=t
 
 To run in the background (recommended), add the `-d` flag.
 
-To specify an UID/GID for the user executing spigot, set UID/GID environment variables (default: 1000).
+To specify an UID for the user executing spigot, set UID environment variable (default: 1000).
 
 ### Configuration
 

@@ -25,12 +25,11 @@ RUN apk update && \
 
 FROM openjdk:12-alpine
 
-# Set default UID/GID for non-root user
-ENV UID = 1000
-ENV GID = 1000
+# Set default UID for non-root user
+ENV UID=1000
 
 # Create non-root user
-RUN adduser -D -g $GID -U $UID -h /minecraft -s /sbin/nologin minecraft && \
+RUN adduser -D -u $UID -h /minecraft -s /sbin/nologin mcuser && \
     apk update && \
     apk add --no-cache python3 bash && \
     python3 -m ensurepip && \
@@ -39,7 +38,7 @@ RUN adduser -D -g $GID -U $UID -h /minecraft -s /sbin/nologin minecraft && \
     if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
     if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi && \
     rm -r /root/.cache
-USER minecraft
+USER mcuser
 WORKDIR /minecraft
 COPY --from=builder /minecraft/spigot-*.jar /minecraft/spigot.jar
 EXPOSE 25565
