@@ -20,6 +20,6 @@ cd /minecraft
 if [[ "$TRAVIS" = true ]]; then
     echo "stop" | java -jar /minecraft/spigot.jar
 else
-    [ ! -f /minecraft/server.properties ] || [ "${FORCE_CONFIG}" = "true" ] && python3 /minecraft/configure.py
+    [ ! -f /minecraft/server.properties ] || [ "${FORCE_CONFIG}" = "true" ] && python3 /configure.py
     java -jar /minecraft/spigot.jar
 fi
