@@ -3,7 +3,6 @@
 #Solution borrowed from https://github.com/itzg/dockerfiles/blob/master/minecraft-server/start-minecraft.sh
 if [ ! -f /minecraft/eula.txt ]; then
   if [ "$EULA" != "" ]; then
-    echo "# Generated via Docker on $(date)" > eula.txt
     echo "eula=$EULA" > /minecraft/eula.txt
   else
     echo ""
@@ -20,6 +19,6 @@ cd /minecraft
 if [[ "$TRAVIS" = true ]]; then
     echo "stop" | java -jar /minecraft/spigot.jar
 else
-    [ ! -f /minecraft/server.properties ] || [ "${FORCE_CONFIG}" = "true" ] && python3 /minecraft/configure.py
+    [ ! -f /minecraft/server.properties ] || [ "${FORCE_CONFIG}" = "true" ] && python3 /configure.py
     java -jar /minecraft/spigot.jar
 fi

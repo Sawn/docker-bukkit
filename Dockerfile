@@ -42,6 +42,6 @@ USER mcuser
 WORKDIR /minecraft
 COPY --from=builder /minecraft/spigot-*.jar /minecraft/spigot.jar
 EXPOSE 25565
-ADD entrypoint.sh /minecraft/entrypoint.sh
-ADD configure.py /minecraft/configure.py
-ENTRYPOINT ["/minecraft/entrypoint.sh"]
+ADD entrypoint.sh /entrypoint.sh
+ADD configure.py /configure.py
+ENTRYPOINT ["/entrypoint.sh"]
