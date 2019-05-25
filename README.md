@@ -8,29 +8,23 @@
 
 # Docker Bukkit
 
-A Docker Bukkit/Spigot server based on Alpine.
+A Docker Spigot server based on Alpine and OpenJDK 12.
 
 ### Running the server
 
-To start the server and accept the EULA in one fell swoop, just pass the `EULA=true` environment variable to Docker when running the container. I recommend mounting a directory from your host onto `/data` in the container to make map and server data persistent.
+To start the server and accept the EULA in one fell swoop, just pass the `EULA=true` environment variable to Docker when running the container. I recommend mounting a directory from your host onto `/minecraft` in the container to make map and server minecraft persistent.
 
-`docker run -it -v /data:/data -p 25565:25565  -e EULA=true --name mc_server spidie/bukkit` 
+`docker run -it -v /minecraft:/minecraft -p 25565:25565  -e EULA=true --name mc_server sawn/minecraft-spigot` 
 
 To run in the background (recommended), add the `-d` flag.
 
-**NOTE**: At this point in time, the `-it` flags are **_strongly recommended_** as without them, the server appears to try to hog 100% of the CPU. We are working on a solution.
-
-### Spigot included
-
-Yes, even though the repo's name is `bukkit`, we have included the lovely spigot server as well. To run the spigot server, supply it as an argument like so:
-
-`docker run -it -v /data:/data -p 25565:25565  -e EULA=true --name mc_server spidie/bukkit spigot` 
+To specify an UID/GID for the user executing spigot, set UID/GID environment variables (default: 1000).
 
 ### Configuration
 
-You can bring your own existing data + configuration and mount it to the `/data` directory when starting the container by using the `-v` option. You may also pass configuration options as environment variables like so:
+You can bring your own existing minecraft + configuration and mount it to the `/minecraft` directory when starting the container by using the `-v` option. You may also pass configuration options as environment variables like so:
 
-`docker run -it -e DIFFICULTY=2 -e MOTD="A non-standard message" -e SPAWN_ANIMALS=false spidie/bukkit`
+`docker run -it -e DIFFICULTY=2 -e MOTD="A non-standard message" -e SPAWN_ANIMALS=false sawn/minecraft-spigot`
 
 This container will only attempt generate a `server.properties` file if one does not already exist. If you would like to use the configuration tool, be sure that you are not providing a configuration file or that you also set `FORCE_CONFIG=true` in the environment variables.
 
@@ -46,7 +40,7 @@ level-seed=123456789
 EULA=true
 ```
 
-`docker run -d -it --env-file env.list -v $(pwd)/data:/data -p 25565:25565 bbriggs/bukkit`
+`docker run -d -it --env-file env.list -v $(pwd)/minecraft:/minecraft -p 25565:25565 sawn/minecraft-spigot`
 
 #### List of Environment Variables
 
@@ -96,4 +90,4 @@ A full list of `server.properties` settings and their corresponding environment 
 To run a specific version of Bukkit or Spigot, use a docker tag. 
 
 Example:
-`docker run -it -v /data:/data -p 25565:25565  -e EULA=true --name mc_server spidie/bukkit:1.14.1 spigot` 
+`docker run -it -v /minecraft:/minecraft -p 25565:25565  -e EULA=true --name mc_server sawn/minecraft-spigot:1.14.1` 

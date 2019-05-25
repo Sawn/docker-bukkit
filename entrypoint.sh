@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #Solution borrowed from https://github.com/itzg/dockerfiles/blob/master/minecraft-server/start-minecraft.sh
-if [ ! -f /data/eula.txt ]; then
+if [ ! -f /minecraft/eula.txt ]; then
   if [ "$EULA" != "" ]; then
     echo "# Generated via Docker on $(date)" > eula.txt
-    echo "eula=$EULA" > /data/eula.txt
+    echo "eula=$EULA" > /minecraft/eula.txt
   else
     echo ""
     echo "Please accept the Minecraft EULA at"
@@ -16,10 +16,10 @@ if [ ! -f /data/eula.txt ]; then
     exit 1
   fi
 fi
-cd /data
+cd /minecraft
 if [[ "$TRAVIS" = true ]]; then
-    echo "stop" | java -jar /root/$1.jar
+    echo "stop" | java -jar /minecraft/spigot.jar
 else
-    [ ! -f /data/server.properties ] || [ "${FORCE_CONFIG}" = "true" ] && python3 /root/configure.py
-    java -jar /root/$1.jar
+    [ ! -f /minecraft/server.properties ] || [ "${FORCE_CONFIG}" = "true" ] && python3 /minecraft/configure.py
+    java -jar /minecraft/spigot.jar
 fi

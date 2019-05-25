@@ -15,30 +15,34 @@
 #     with this program; if not, write to the Free Software Foundation, Inc.,
 #     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-FROM openjdk:8-alpine as builder
+FROM openjdk:12-alpine as builder
 ARG BUKKIT_VERSION=1.14.1
 WORKDIR /minecraft
-RUN echo $BUKKIT_VERSION
-RUN apk update
-RUN apk --no-cache add wget git bash
-RUN wget -O /minecraft/BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
-RUN java -jar BuildTools.jar --rev $BUKKIT_VERSION  2>&1 /dev/null
+RUN apk update && \
+    apk --no-cache add wget git bash && \
+    wget -O /minecraft/BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar && \
+    java -jar BuildTools.jar --rev $BUKKIT_VERSION  2>&1 /dev/null
 
-FROM openjdk:8-alpine
-# frolvlad/alpine-python3
-RUN apk add --no-cache python3 bash && \
+FROM openjdk:12-alpine
+
+# Set default UID/GID for non-root user
+ENV UID = 1000
+ENV GID = 1000
+
+# Create non-root user
+RUN adduser -D -g $GID -U $UID -h /minecraft -s /sbin/nologin minecraft && \
+    apk update && \
+    apk add --no-cache python3 bash && \
     python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip3 install --upgrade pip setuptools && \
     if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
     if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi && \
     rm -r /root/.cache
-WORKDIR /root
-COPY --from=builder /minecraft/craftbukkit-*.jar /root/craftbukkit.jar
-COPY --from=builder /minecraft/spigot-*.jar /root/spigot.jar
+USER minecraft
+WORKDIR /minecraft
+COPY --from=builder /minecraft/spigot-*.jar /minecraft/spigot.jar
 EXPOSE 25565
-WORKDIR /data
-ADD entrypoint.sh /root/entrypoint.sh
-ADD configure.py /root/configure.py
-ENTRYPOINT ["/root/entrypoint.sh"]
-CMD ["craftbukkit"]
+ADD entrypoint.sh /minecraft/entrypoint.sh
+ADD configure.py /minecraft/configure.py
+ENTRYPOINT ["/minecraft/entrypoint.sh"]
