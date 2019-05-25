@@ -64,4 +64,4 @@ class Config:
 
 if __name__ == "__main__":
     c = Config()
-    c.write("/data/server.properties")
+    c.write("/minecraft/server.properties")
